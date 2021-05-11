@@ -1,6 +1,6 @@
 from motorHelpers import Motor
-
-from flask import Flask
+import json
+from flask import Flask, request
 app = Flask(__name__)
 
 @app.route('/')
@@ -30,6 +30,20 @@ def left():
 @app.route('/stop')
 def stop():
     Motor.stop()
+    return 'ok'
+
+@app.route('/control', methods=["POST"])
+def control():
+    req = request.json
+    if req is None:
+        req = json.loads(request.data)
+    left = req['left']
+    right = req['right']
+    if right == 0 and left == 0:
+        Motor.stop()
+    else:
+        Motor.leftMotor(left)
+        Motor.rightMotor(right)
     return 'ok'
 
 app.run(host='0.0.0.0', port=2201)

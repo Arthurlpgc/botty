@@ -6,7 +6,7 @@ Dir = [
     'forward',
     'backward',
 ]
-pwm = PCA9685(0x40, debug=False)
+pwm = PCA9685(0x43, debug=False)
 pwm.setPWMFreq(50)
 
 class MotorDriver():
@@ -54,9 +54,16 @@ class MotorDriver():
     def turnRight(self, strength):
         self.MotorRun(0, 'forward', strength)
         self.MotorRun(1, 'backward', strength)
+
     def turnLeft(self, strength):
         self.MotorRun(0, 'backward', strength)
         self.MotorRun(1, 'forward', strength)
+    
+    def leftMotor(self, strength):
+        self.MotorRun(0, 'backward' if strength < 0 else 'forward', abs(strength))
+
+    def rightMotor(self, strength):
+        self.MotorRun(1, 'backward' if strength < 0 else 'forward', abs(strength))
 
 
 
