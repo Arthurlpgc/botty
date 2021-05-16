@@ -1,8 +1,10 @@
 from motorHelpers import Motor
 import json
-from flask import Flask, request
+from flask import Flask, request, Response
+import picamera 
+import cv2
 app = Flask(__name__)
-
+vc = cv2.VideoCapture(0) 
 @app.route('/')
 def hello_world():
     return 'Hello, Han!'
@@ -45,5 +47,19 @@ def control():
         Motor.leftMotor(left)
         Motor.rightMotor(right)
     return 'ok'
+
+
+def gen(): 
+   """Video streaming generator function.""" 
+   while True: 
+       rval, frame = vc.read() 
+       cv2.imwrite('pic.jpg', frame) 
+       yield (b'--frame\r\n' 
+              b'Content-Type: image/jpeg\r\n\r\n' + open('pic.jpg', 'rb').read() + b'\r\n') 
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 app.run(host='0.0.0.0', port=2201)

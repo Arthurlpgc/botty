@@ -83,7 +83,8 @@ function App() {
   });
   return (
     <div className="App">
-      <div className="App-header">
+      <div className="App-header" style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+        <img width={radius * 2} src="http://192.168.1.8:2201/video_feed" />
         <Circle color="#333437" />
       </div>
     </div>
