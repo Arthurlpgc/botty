@@ -6,8 +6,10 @@ Dir = [
     'forward',
     'backward',
 ]
-pwm = PCA9685(0x43, debug=False)
-pwm.setPWMFreq(50)
+pwm_back = PCA9685(0x43, debug=False)
+pwm_back.setPWMFreq(50)
+pwm_front = PCA9685(0x40, debug=False)
+pwm_front.setPWMFreq(50)
 
 class MotorDriver():
     def __init__(self):
@@ -22,26 +24,26 @@ class MotorDriver():
         if speed > 100:
             return
         if(motor == 0):
-            pwm.setDutycycle(self.PWMA, speed)
+            self.setDutycycle(self.PWMA, speed)
             if(index == Dir[0]):
-                pwm.setLevel(self.AIN1, 0)
-                pwm.setLevel(self.AIN2, 1)
+                self.setLevel(self.AIN1, 0)
+                self.setLevel(self.AIN2, 1)
             else:
-                pwm.setLevel(self.AIN1, 1)
-                pwm.setLevel(self.AIN2, 0)
+                self.setLevel(self.AIN1, 1)
+                self.setLevel(self.AIN2, 0)
         if(motor == 1):
-            pwm.setDutycycle(self.PWMB, speed)
+            self.setDutycycle(self.PWMB, speed)
             if(index == Dir[0]):
-                pwm.setLevel(self.BIN1, 0)
-                pwm.setLevel(self.BIN2, 1)
+                self.setLevel(self.BIN1, 0)
+                self.setLevel(self.BIN2, 1)
             else:
-                pwm.setLevel(self.BIN1, 1)
-                pwm.setLevel(self.BIN2, 0)
+                self.setLevel(self.BIN1, 1)
+                self.setLevel(self.BIN2, 0)
  
     
     def stop(self):
-        pwm.setDutycycle(self.PWMA, 0)
-        pwm.setDutycycle(self.PWMB, 0)
+        self.setDutycycle(self.PWMA, 0)
+        self.setDutycycle(self.PWMB, 0)
 
     def forward(self, strength):
         self.MotorRun(0, 'forward', strength)
@@ -64,6 +66,14 @@ class MotorDriver():
 
     def rightMotor(self, strength):
         self.MotorRun(1, 'backward' if strength < 0 else 'forward', abs(strength))
+    
+    def setDutycycle(self, channel, pulse):
+        pwm_back.setDutycycle(channel, pulse)
+        pwm_front.setDutycycle(channel, pulse)
+    
+    def setLevel(self, channel, level):
+        pwm_back.setLevel(channel, level)
+        pwm_front.setLevel(channel, level)
 
 
 

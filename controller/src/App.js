@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import _ from 'lodash';
 const radius = 150;
@@ -71,22 +71,23 @@ function Circle(props) {
   };
   return (
     // 
-    <div onTouchStart={calculateMove} onTouchMove={calculateMove}  onTouchCancel={() => action(0, 0)} onTouchEnd={() => action(0, 0)} style={circleStyle}>
+    <div onTouchStart={calculateMove} onTouchMove={calculateMove} onTouchCancel={() => action(0, 0)} onTouchEnd={() => action(0, 0)} style={circleStyle}>
     </div>
   );
 }
 
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <Circle color="#333437" />
-        </div>
+function App() {
+  useEffect(() => {
+    document.addEventListener("touchmove", e => e.preventDefault(), { passive: false })
+  });
+  return (
+    <div className="App">
+      <div className="App-header">
+        <Circle color="#333437" />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
